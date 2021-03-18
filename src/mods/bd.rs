@@ -52,25 +52,29 @@ fn crea_tabla(bd: &Connection) {
     match bd.execute(
         // tabla de RFCs no autorizados
         "CREATE TABLE IF NOT EXISTS rfc_noa (
-            rfc       VARCHAR(13) PRIMARY KEY
+            id_rfc      INTEGER PRIMARY KEY AUTOINCREMENT,
+            rfc         VARCHAR(13) NOT NULL,
+            fecha       TEXT NOT NULL,
+            modificador INTEGER
         )",
         params![],
     ) {
         Ok(_tabla) => {
-            for contrib in super::hashset::hash_rfc() {
-                if contrib.stat {
-                    match bd.execute("INSERT INTO rfc_noa (rfc) VALUES (?1)",
-                    params![contrib.rfc]) {
-                        Ok(_insert) => {
-                            println!();
-                            println!("Inserción exitosa de \n{:#?}", contrib);
-                        },
-                        _ => {
-                            panic!("Imposible insertar {:#?}.", contrib);
-                        }
-                    };
-                }
-            }
+            println!("La creación de la tabla fue exitosa.")
+            // for contrib in super::hashset::hash_rfc() {
+            //     if contrib.stat {
+            //         match bd.execute("INSERT INTO rfc_noa (rfc) VALUES (?1)",
+            //         params![contrib.rfc]) {
+            //             Ok(_insert) => {
+            //                 println!();
+            //                 println!("Inserción exitosa de \n{:#?}", contrib);
+            //             },
+            //             _ => {
+            //                 panic!("Imposible insertar {:#?}.", contrib);
+            //             }
+            //         };
+            //     }
+            // }
         },
         _ => {
             panic!("Falló la creación de la tabla rfc_noa.")
@@ -125,7 +129,7 @@ fn permiso_ruta(f: fn(&Connection), path_file: String, default_file: String) -> 
 pub fn crea_bd() -> Connection {
     
     //let default_file = String::from("/home/mapa9653/Escritorio/sat/bd_rfc");
-    let default_file = String::from("/home/mapa9653/Escritorio/sat/bd_rfc");
+    let default_file = String::from("/home/gohe95av/Escritorio/sat/bd_rfc");
 
     // Leer la variable de entorno.
     match env::var("PATHBD") {
@@ -140,11 +144,11 @@ pub fn crea_bd() -> Connection {
                 // Se define la ruta completa del archivo de la BD concatenando path_dir con el nombre del archivo
                 let path_file = diag(&path_dir);
 
-                // Se verifica si la ruta completa (con archivo) es válida.
+                // Se verifica si la ruta completa (con archivo) es válida (el archivo ya existe).
                 if PathBuf::from(&path_file).as_path().exists() {
                     permiso_ruta(verificar, path_file, default_file)
                 } else {
-                    // ruta completa no válida
+                    // Ruta completa no válida (el archivo aún no existe).
                     permiso_ruta(crea_tabla, path_file, default_file)
                 }
             } else {
