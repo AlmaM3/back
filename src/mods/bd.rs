@@ -19,8 +19,8 @@ pub fn verificar(bd: &Connection) {
             // La inserción de un "rfc" de prueba (un String) permite saber si el tipo de dato de la
             // columna de la tabla es compatible. Si no, se hace panic!
             match bd.execute(
-                "INSERT INTO rfc_noa (rfc) VALUES (?1)",
-                params!["Alma".to_string()],
+                "INSERT INTO rfc_noa (rfc, fecha, modificador) VALUES (?1, ?2, ?3)",
+                params!["Alma".to_string(), "x".to_string(), 2],
             ) {
                 Ok(_) => {
                     bd.execute(
@@ -128,8 +128,8 @@ fn permiso_ruta(f: fn(&Connection), path_file: String, default_file: String) -> 
 // Crea la BBDD en la ruta especificada si es válida, si no en una ruta por default
 pub fn crea_bd() -> Connection {
     
-    //let default_file = String::from("/home/mapa9653/Escritorio/sat/bd_rfc");
-    let default_file = String::from("/home/gohe95av/Escritorio/sat/bd_rfc");
+    let default_file = String::from("/home/mapa9653/Escritorio/sat/bd_rfc");
+    //let default_file = String::from("/home/gohe95av/Escritorio/sat/bd_rfc");
 
     // Leer la variable de entorno.
     match env::var("PATHBD") {

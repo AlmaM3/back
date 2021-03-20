@@ -41,9 +41,10 @@ fn exist_rfc(bd: &Connection, rfc: String) -> Respuesta {
 /// `Respuesta::Error500(HttpResponse)`, con un error 500.
 fn insert_rfc(bd: &Connection, rfc: Received) -> Respuesta {
     // Devuelve un código 500 si no se ejecuta la sentencia de inserción
-    match bd.execute("INSERT INTO rfc_noa (rfc) VALUES (?1)", params![rfc.rfc]) {
-        Ok(_insert) => Respuesta::Exito(1),
-        _ => Respuesta::Error500(error500()),
+    match bd.execute("INSERT INTO rfc_noa (rfc, fecha, modificador) VALUES (?1, ?2, ?3)", 
+        params![rfc.rfc, rfc.fecha, rfc.modificador]) {
+             Ok(_insert) => Respuesta::Exito(1),
+             _ => Respuesta::Error500(error500()),
     }
 }
 
