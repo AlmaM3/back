@@ -12,9 +12,11 @@ struct Sent {
 }
 
 pub async fn protected() -> Result<HttpResponse, actix_web::Error> {
-    let bd = web::Data::new(Arc::new(Mutex::new(super::bd::crea_bd())));
-    let x = bd.lock();
+    // let bd = web::Data::new(Arc::new(Mutex::new(super::bd::crea_bd())));
+    // let x = bd.lock();
 
+
+    
     let datos = [
         Sent {
             rfc: "GOHE".to_string(),

@@ -39,21 +39,21 @@ fn exist_rfc(bd: &Connection, rfc: String) -> Respuesta {
 /// Inserta un RFC en la base de datos y devuelve `Respuesta::Exito(i64)`
 /// si la sentencia de inserción ha sido exitosa. En otro caso, devuelve
 /// `Respuesta::Error500(HttpResponse)`, con un error 500.
-fn insert_rfc(bd: &Connection, rfc: Received) -> Respuesta {
+fn insert_rfc(bd: &Connection, data: Received) -> Respuesta {
     // Devuelve un código 500 si no se ejecuta la sentencia de inserción
     match bd.execute("INSERT INTO rfc_noa (rfc, fecha, modificador) VALUES (?1, ?2, ?3)", 
-        params![rfc.rfc, rfc.fecha, rfc.modificador]) {
-             Ok(_insert) => Respuesta::Exito(1),
-             _ => Respuesta::Error500(error500()),
+    params![data.rfc.to_string(), data.fecha.to_string(), data.modificador]) {
+        Ok(_insert) => Respuesta::Exito(1),
+        _ => Respuesta::Error500(error500()),
     }
 }
 
 /// Elimina un RFC en la base de datos y devuelve `Respuesta::Exito(i64)`
 /// si la sentencia de inserción ha sido exitosa. En otro caso, devuelve
 /// `Respuesta::Error500(HttpResponse)`, con un error 500.
-fn delete_rfc(bd: &Connection, rfc: Received) -> Respuesta {
+fn delete_rfc(bd: &Connection, data: Received) -> Respuesta {
     // Devuelve un código 500 si no se ejecuta la sentencia de borrado
-    match bd.execute("DELETE FROM rfc_noa WHERE rfc = ?1", params![rfc.rfc]) {
+    match bd.execute("DELETE FROM rfc_noa WHERE rfc = ?1", params![data.rfc]) {
         Ok(_delete) => Respuesta::Exito(1),
         _ => Respuesta::Error500(HttpResponse::InternalServerError().body("")),
     }
