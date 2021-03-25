@@ -102,11 +102,12 @@ pub struct ServerData {
     pub connection: Arc<Mutex<Connection>>
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Received {
-    rfc: String,
-    fecha: String,
-    modificador: String,
+    pub id: i64,
+    pub rfc: String,
+    pub fecha: String,
+    pub modificador: i64,
 }
 /// Comparte `Mutex<Connection>` con la función ```agregar_rfc``` y la ejecuta.
 /// Toma el Mutex de la conexión del thread principal,
