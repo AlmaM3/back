@@ -1,7 +1,8 @@
 extern crate actix_rt;
 extern crate actix_web;
 
-use actix_web::{HttpRequest, HttpResponse};
+use actix_web::{HttpRequest, HttpResponse, dev::HttpResponseBuilder};
+use actix_http::{http};
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
@@ -32,11 +33,11 @@ async fn load_file(path: PathBuf) -> HttpResponse {
                     _ => "application/octet-stream",
                 };
                 HttpResponse::Ok()
-                    .append_header(("Content-Type", ext))
+                    .header(http::header::CONTENT_TYPE, ext)
                     .body(content)
             } else {
                 HttpResponse::Ok()
-                    .append_header(("Content-Type", "application/octet-stream"))
+                    .header(http::header::CONTENT_TYPE, "application/json")
                     .body(content)
             }
         }
@@ -59,7 +60,7 @@ pub async fn index_front(req: HttpRequest) -> HttpResponse {
     } else {
         // No extension, then we hand in html
         HttpResponse::Ok()
-            .append_header(("Content-Type", "text/html"))
+            .header(http::header::CONTENT_TYPE, "text/html")
             .body(include_str!("../../front/public/index.html"))
         //.body("kestapanda")
     }

@@ -13,50 +13,43 @@ fn query_protected(bd: &Connection) {
     match query {
         Ok(query) => {
             let mut query2 = query;
-            let query_iter = query2
-                .query_map(params![], |row| {
+            let query_iter = query2.query_map(params![], |row| {
                 Ok(Received {
-                        id: row.get(0)?,
-                        rfc: row.get(1)?,
-                        fecha: row.get(2)?,
-                        modificador: row.get(3)?,
-                    })
-                });
+                    id: row.get(0)?,
+                    rfc: row.get(1)?,
+                    fecha: row.get(2)?,
+                    modificador: row.get(3)?,
+                })
+            });
 
-                match query_iter {
-                    Ok(iter) => {
-                        for x in iter {
-                            println!("{:?}", x.unwrap());
-                        }
+            match query_iter {
+                Ok(iter) => {
+                    for x in iter {
+                        println!("{:?}", x.unwrap());
                     }
-                    _ => {} 
                 }
-
-            
+                _ => {}
+            }
         }
         _ => {}
     }
 
-    
-
-//     for x in query_iter {
-//         println!("{:?}", x.unwrap());
-//     }
+    //     for x in query_iter {
+    //         println!("{:?}", x.unwrap());
+    //     }
 }
 
 pub async fn protected(
     //received: web::Json<Received>, //rfc: web::Path<String>,
     bd: web::Data<ServerData>,
 ) -> Result<HttpResponse, actix_web::Error> {
-
     match bd.connection.lock() {
-
-        Ok(bd) => {query_protected(&bd); 
-                    Ok(HttpResponse::Ok().body("cheems"))}
-        _ => {Ok(HttpResponse::Ok().body("error"))}
-
+        Ok(bd) => {
+            query_protected(&bd);
+            Ok(HttpResponse::Ok().body("cheems"))
+        }
+        _ => Ok(HttpResponse::Ok().body("error")),
     }
-    
 
     // let bd = web::Data::new(Arc::new(Mutex::new(super::bd::crea_bd())));
     // let x = bd.lock();

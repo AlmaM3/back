@@ -23,7 +23,8 @@ extern crate rusqlite;
 extern crate actix_rt;
 extern crate actix_web;
 
-use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer};
+use actix_session::{CookieSession, Session};
+use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer};
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
@@ -40,23 +41,37 @@ use mods::front_link::index_front;
 use mods::hashset::rfc_protegido; // submódulo para validad si el RFC está protegido
 use mods::logger::KixtiaLogger; // submódulo para el logger Kixtia
 use mods::options::option_settings;
-use mods::stat_serv::index1;
 use mods::protected::protected;
+use mods::session::login;
+use mods::stat_serv::index1;
 
 use mods::add_remove::ServerData;
 
-
 use serde::{Deserialize, Serialize};
 
+/*fn index(session: Session) -> Result<&'static str, Error> {
+    // access session data
+    if let Some(count) = session.get::<i32>("counter").unwrap() {
+        println!("SESSION value: {}", count);
+        session.set("counter", count + 1).unwrap();
+    } else {
+        session.set("counter", 1).unwrap();
+    }
+
+    Ok("Welcome!")
+}*/
+
 /// Despliega el servidor
-#[actix_rt::main]
+#[actix_web::main]
 async fn main() {
     //-> std::io::Result<()> {
     // Se establece la conexión por única vez para ser compartida entre las funciones
     // asíncronas de los endpoints.
-    let conexion : ServerData = ServerData {
-        connection: Arc::new(Mutex::new(crea_bd()))
+    let conexion: ServerData = ServerData {
+        connection: Arc::new(Mutex::new(crea_bd())),
     };
+
+     let s = CookieSession::signed(&[0; 32]);
     // Acceder la dirección del socket
     //let socket = option_settings().0;
     // // Acceder al log path para guardar las bitácoras
@@ -75,16 +90,20 @@ async fn main() {
     HttpServer::new(
         move || {
             App::new()
-                // conexion.clone() va a estar disponible para los services
+                //conexion.clone() va a estar disponible para los services
                 .data(conexion.clone())
-                // endpoint para agregar un rfc a la tabla de protegidos
+                // endpoint de inicio de sesión
+                 .wrap(s)
+                // .service(web::resource("/").to(index))
+                 .service(web::resource("/login").route(web::post().to(login)))
+                // // endpoint para agregar un rfc a la tabla de protegidos
                 .service(web::resource("/add/rfc").route(web::post().to(add_rfc)))
-                // endpoint para borrar un rfc a la tabla de protegidos
+                // // endpoint para borrar un rfc a la tabla de protegidos
                 .service(web::resource("/remove/rfc").route(web::post().to(remove_rfc)))
-                // endopoint para buscar archivos en la carpeta static
-                //.service(web::resource("/archivo/{filename}").route(web::get().to(index)))
+                // // endopoint para buscar archivos en la carpeta static
+                // //.service(web::resource("/archivo/{filename}").route(web::get().to(index)))
                 .service(web::resource("/protected").route(web::get().to(protected)))
-                // Despliega index.html para rutas no especificadas.
+                // // Despliega index.html para rutas no especificadas.
                 .default_service(web::route().to(index_front))
         }, //web::post().to(|| {
            //HttpResponse::Ok()
