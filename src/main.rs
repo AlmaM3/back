@@ -63,15 +63,19 @@ use serde::{Deserialize, Serialize};
 
 /// Despliega el servidor
 #[actix_web::main]
-async fn main() {
-    //-> std::io::Result<()> {
+async fn main() //{
+{
     // Se establece la conexión por única vez para ser compartida entre las funciones
     // asíncronas de los endpoints.
     let conexion: ServerData = ServerData {
         connection: Arc::new(Mutex::new(crea_bd())),
     };
 
-     let s = CookieSession::signed(&[0; 32]);
+    // let s = CookieSession::signed(&[0; 32]);
+    
+    //env_logger::init();
+ 
+
     // Acceder la dirección del socket
     //let socket = option_settings().0;
     // // Acceder al log path para guardar las bitácoras
@@ -93,9 +97,10 @@ async fn main() {
                 //conexion.clone() va a estar disponible para los services
                 .data(conexion.clone())
                 // endpoint de inicio de sesión
-                 .wrap(s)
+                .wrap(CookieSession::signed(&[0; 32]).secure(false))
                 // .service(web::resource("/").to(index))
-                 .service(web::resource("/login").route(web::post().to(login)))
+                // //endpoint para iniciar sesión
+                .service(web::resource("/login").route(web::post().to(login)))
                 // // endpoint para agregar un rfc a la tabla de protegidos
                 .service(web::resource("/add/rfc").route(web::post().to(add_rfc)))
                 // // endpoint para borrar un rfc a la tabla de protegidos
@@ -117,12 +122,12 @@ async fn main() {
            // Ventana inicial del servidor
            //.route("/", web::to(|| HttpResponse::Ok().body(MJE)))
     )
-    .bind("localhost:8091")
+    .bind("localhost:8095")
     .unwrap()
     //.bind(socket)?
     .run()
     .await
-    .unwrap();
+    .unwrap()
 }
 
 // ----------- PREGUNTAS -----------
