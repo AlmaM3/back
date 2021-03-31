@@ -33,11 +33,13 @@ async fn load_file(path: PathBuf) -> HttpResponse {
                     _ => "application/octet-stream",
                 };
                 HttpResponse::Ok()
-                    .header(http::header::CONTENT_TYPE, ext)
+                  .append_header(("Content-Type", ext))
+                    // .header(http::header::CONTENT_TYPE, ext)
                     .body(content)
             } else {
                 HttpResponse::Ok()
-                    .header(http::header::CONTENT_TYPE, "application/json")
+                    .append_header(("Content-Type", "application/octet-stream"))
+                    //.header(http::header::CONTENT_TYPE, "application/json")
                     .body(content)
             }
         }
@@ -60,7 +62,8 @@ pub async fn index_front(req: HttpRequest) -> HttpResponse {
     } else {
         // No extension, then we hand in html
         HttpResponse::Ok()
-            .header(http::header::CONTENT_TYPE, "text/html")
+            .append_header(("Content-Type", "text/html"))
+
             .body(include_str!("../../front/public/index.html"))
         //.body("kestapanda")
     }

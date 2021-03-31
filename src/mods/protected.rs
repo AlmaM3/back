@@ -40,30 +40,32 @@ fn query_protected(bd: &Connection) {
 }
 
 pub async fn protected(
-    //received: web::Json<Received>, //rfc: web::Path<String>,
+    received: web::Json<Received>, //rfc: web::Path<String>,
     bd: web::Data<ServerData>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    match bd.connection.lock() {
-        Ok(bd) => {
-            query_protected(&bd);
-            Ok(HttpResponse::Ok().body("cheems"))
-        }
-        _ => Ok(HttpResponse::Ok().body("error")),
-    }
+    // match bd.connection.lock() {
+    //     Ok(bd) => {
+    //         query_protected(&bd);
+    //         Ok(HttpResponse::Ok().body("cheems"))
+    //     }
+    //     _ => Ok(HttpResponse::Ok().body("error")),
+    // }
 
     // let bd = web::Data::new(Arc::new(Mutex::new(super::bd::crea_bd())));
     // let x = bd.lock();
 
-    /*let datos = [
+    let datos = [
             Received {
+                id: 1,
                 rfc: "GOHE".to_string(),
                 fecha: "01/01/01".to_string(),
-                modificador: "Susana".to_string(),
+                modificador: 4,
             },
             Received {
+                id: 2,
                 rfc: "MAPA".to_string(),
                 fecha: "02/02/02".to_string(),
-                modificador: "Susana".to_string(),
+                modificador: 4,
             },
         ];
 
@@ -89,5 +91,5 @@ pub async fn protected(
         Ok(HttpResponse::Ok()
             .append_header(("Content-Type", "application/json"))
             .body(datos_serde))
-    */
+    
 }

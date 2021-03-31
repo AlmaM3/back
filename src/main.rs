@@ -42,7 +42,7 @@ use mods::hashset::rfc_protegido; // submódulo para validad si el RFC está pro
 use mods::logger::KixtiaLogger; // submódulo para el logger Kixtia
 use mods::options::option_settings;
 use mods::protected::protected;
-use mods::session::login;
+//use mods::session::login;
 use mods::stat_serv::index1;
 
 use mods::add_remove::ServerData;
@@ -72,9 +72,7 @@ async fn main() //{
     };
 
     // let s = CookieSession::signed(&[0; 32]);
-    
     //env_logger::init();
- 
 
     // Acceder la dirección del socket
     //let socket = option_settings().0;
@@ -97,10 +95,10 @@ async fn main() //{
                 //conexion.clone() va a estar disponible para los services
                 .data(conexion.clone())
                 // endpoint de inicio de sesión
-                .wrap(CookieSession::signed(&[0; 32]).secure(false))
+                // .wrap(CookieSession::signed(&[0; 32]).secure(false))
                 // .service(web::resource("/").to(index))
                 // //endpoint para iniciar sesión
-                .service(web::resource("/login").route(web::post().to(login)))
+                //  .service(web::resource("/login").route(web::post().to(login)))
                 // // endpoint para agregar un rfc a la tabla de protegidos
                 .service(web::resource("/add/rfc").route(web::post().to(add_rfc)))
                 // // endpoint para borrar un rfc a la tabla de protegidos
