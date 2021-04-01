@@ -27,7 +27,6 @@ use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer};
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
-
 use log::LevelFilter;
 
 use std::sync::{Arc, Mutex};
@@ -98,7 +97,7 @@ async fn main() {
            // Ventana inicial del servidor
            //.route("/", web::to(|| HttpResponse::Ok().body(MJE)))
     )
-    .bind("localhost:8091")
+    .bind("localhost:8096")
     .unwrap()
     //.bind(socket)?
     .run()
