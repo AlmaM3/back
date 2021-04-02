@@ -20,7 +20,7 @@ pub async fn login(rec: web::Json<LoginData>, req: HttpRequest, session: Session
 
         Ok(HttpResponse::Ok().body("Se inició sesión correctamente"))
     } else {
-        Ok(HttpResponse::Ok().body("Faiiiiiil"))
+        Ok(HttpResponse::BadRequest().body("Faiiiiiil"))
     }
     // session.set("rfc", data.rfc)?;
     // println!("SESSION value: {:?}", session.get::<String>("rfc").unwrap());
