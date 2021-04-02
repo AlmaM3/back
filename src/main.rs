@@ -23,6 +23,8 @@ extern crate rusqlite;
 extern crate actix_rt;
 extern crate actix_web;
 
+use actix_session::{CookieSession, Session};
+
 use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer};
 use std::fs::File;
 use std::io::prelude::*;
@@ -33,22 +35,28 @@ use std::sync::{Arc, Mutex};
 use std::{env, thread};
 
 mod mods; // módulos
-use mods::add_remove::{add_rfc, remove_rfc};
+use mods::add_remove::{add_rfc, remove_rfc, ServerData};
 use mods::bd::crea_bd;
 use mods::front_link::index_front;
 use mods::hashset::rfc_protegido; // submódulo para validad si el RFC está protegido
 use mods::logger::KixtiaLogger; // submódulo para el logger Kixtia
 use mods::options::option_settings;
 use mods::stat_serv::index1;
+use mods::session::login;
+
 use mods::protected::protected;
 
-use mods::add_remove::ServerData;
+
 
 
 use serde::{Deserialize, Serialize};
 
+
+
+
+
 /// Despliega el servidor
-#[actix_rt::main]
+#[actix_web::main]
 async fn main() {
     //-> std::io::Result<()> {
     // Se establece la conexión por única vez para ser compartida entre las funciones
@@ -76,6 +84,8 @@ async fn main() {
             App::new()
                 // conexion.clone() va a estar disponible para los services
                 .data(conexion.clone())
+                .wrap(CookieSession::signed(&[0; 32]).secure(false))
+                .service(web::resource("/login").route(web::post().to(login)))
                 // endpoint para agregar un rfc a la tabla de protegidos
                 .service(web::resource("/add/rfc").route(web::post().to(add_rfc)))
                 // endpoint para borrar un rfc a la tabla de protegidos

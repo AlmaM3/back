@@ -1,4 +1,4 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{web, HttpResponse, http};
 use serde::Serialize;
 use serde_json;
 use std::sync::{Arc, Mutex};
@@ -50,6 +50,7 @@ pub async fn protected() -> Result<HttpResponse, actix_web::Error> {
     // }
 
     Ok(HttpResponse::Ok()
-        .append_header(("Content-Type", "application/json"))
+        //.append_header(("Content-Type", "application/json"))
+        .header(http::header::CONTENT_TYPE, "application/json")
         .body(datos_serde))
 }

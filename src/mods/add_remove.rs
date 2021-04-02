@@ -104,9 +104,9 @@ pub struct ServerData {
 
 #[derive(Deserialize, Serialize)]
 pub struct Received {
-    rfc: String,
-    fecha: String,
-    modificador: String,
+    pub rfc: String,
+    pub fecha: String,
+    pub modificador: String,
 }
 /// Comparte `Mutex<Connection>` con la función ```agregar_rfc``` y la ejecuta.
 /// Toma el Mutex de la conexión del thread principal,
