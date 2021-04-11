@@ -7,15 +7,18 @@ use std::collections::HashSet;
 pub struct LoginData {
     pub rfc: String,
     pub password: String,
-   
 }
 
-pub async fn login(rec: web::Json<LoginData>, req: HttpRequest, session: Session) -> Result <HttpResponse, actix_web::Error> {
-
+pub async fn login(
+    rec: web::Json<LoginData>,
+    req: HttpRequest,
+    session: Session,
+) -> Result<HttpResponse, actix_web::Error> {
     let web::Json(data): web::Json<LoginData> = rec;
 
     if check_password(&data) {
         session.set("RFC", &data.rfc)?;
+       
         println!("SESSION value: {:?}", session.get::<String>("RFC").unwrap());
 
         Ok(HttpResponse::Ok().body("Se inició sesión correctamente"))
@@ -25,16 +28,12 @@ pub async fn login(rec: web::Json<LoginData>, req: HttpRequest, session: Session
     // session.set("rfc", data.rfc)?;
     // println!("SESSION value: {:?}", session.get::<String>("rfc").unwrap());
 
-
     // println!("{:?}", req);
 
     // Ok(HttpResponse::Ok().body("hola"))
-
 }
 
 pub fn check_password(data: &LoginData) -> bool {
-
-
     let mut datos_login = HashSet::new();
 
     datos_login.insert(LoginData {
@@ -49,7 +48,7 @@ pub fn check_password(data: &LoginData) -> bool {
         rfc: "A".to_string(),
         password: "ABC123".to_string(),
     });
-datos_login.insert(LoginData {
+    datos_login.insert(LoginData {
         rfc: "B".to_string(),
         password: "123ABC".to_string(),
     });

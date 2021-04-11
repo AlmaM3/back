@@ -107,7 +107,7 @@ async fn main() {
            // Ventana inicial del servidor
            //.route("/", web::to(|| HttpResponse::Ok().body(MJE)))
     )
-    .bind("localhost:8096")
+    .bind("localhost:8094")
     .unwrap()
     //.bind(socket)?
     .run()

@@ -6,6 +6,7 @@ use std::sync::{Arc, Mutex};
 #[derive(Serialize)]
 
 struct Sent {
+    id: i64,
     rfc: String,
     fecha: String,
     modificador: String,
@@ -19,11 +20,13 @@ pub async fn protected() -> Result<HttpResponse, actix_web::Error> {
     
     let datos = [
         Sent {
+            id: 1,
             rfc: "GOHE".to_string(),
             fecha: "01/01/01".to_string(),
             modificador: "Susana".to_string(),
         },
         Sent {
+            id: 2,
             rfc: "MAPA".to_string(),
             fecha: "02/02/02".to_string(),
             modificador: "Susana".to_string(),
@@ -31,11 +34,15 @@ pub async fn protected() -> Result<HttpResponse, actix_web::Error> {
     ];
 
     let datos_serde = serde_json::json!([
-        {"rfc": datos[0].rfc,
+        {
+        "id": datos[0].id,
+        "rfc": datos[0].rfc,
         "fecha": datos[0].fecha,
         "modificador": datos[0].modificador
     },
-        {"rfc": datos[1].rfc,
+        {
+        "id": datos[1].id,  
+        "rfc": datos[1].rfc,
         "fecha": datos[1].fecha,
         "modificador": datos[1].modificador
     }]
